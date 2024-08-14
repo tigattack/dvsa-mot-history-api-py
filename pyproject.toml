@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "dvsa_mot_history"
+version = "0.1.0"
+description = "Python SDK for DVSA MOT History API"
+authors = ["tigattack <10629864+tigattack@users.noreply.github.com>"]
+readme = "README.md"
+license = "MIT"
+packages = [
+    {include = "dvsa_mot_history"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+msal = "^1.30.0"
+aiohttp = "^3.10.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
