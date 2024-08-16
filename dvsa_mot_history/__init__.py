@@ -88,19 +88,15 @@ class DVSAMotTest:
         defects: Defects found during the MOT test.
     """
 
-    completedDate: str
+    completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[str]
+    expiryDate: Optional[datetime]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
     dataSource: Literal[MotTestDataSource.DVSA]
     defects: List[MotTestDefect] = field(default_factory=list)
-
-    def __post_init__(self):
-        self.completedDate = parse_datetime(self.completedDate)
-        self.expiryDate = parse_datetime(self.expiryDate)
 
 
 @dataclass
@@ -119,18 +115,14 @@ class DVANIMotTest:
         dataSource: Source of the MOT test data. In this case, DVA NI.
     """
 
-    completedDate: str
+    completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[str]
+    expiryDate: Optional[datetime]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
     dataSource: Literal[MotTestDataSource.DVA_NI]
-
-    def __post_init__(self):
-        self.completedDate = parse_datetime(self.completedDate)
-        self.expiryDate = parse_datetime(self.expiryDate)
 
 
 @dataclass
@@ -151,9 +143,9 @@ class CVSMotTest:
         defects: Details of any defects found during the test.
     """
 
-    completedDate: str
+    completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[str]
+    expiryDate: Optional[datetime]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
@@ -161,10 +153,6 @@ class CVSMotTest:
     location: Optional[str]
     dataSource: Literal[MotTestDataSource.CVS]
     defects: List[MotTestDefect] = field(default_factory=list)
-
-    def __post_init__(self):
-        self.completedDate = parse_datetime(self.completedDate)
-        self.expiryDate = parse_datetime(self.expiryDate)
 
 
 @dataclass
@@ -189,21 +177,16 @@ class VehicleWithMotResponse:
     registration: Optional[str]
     make: Optional[str]
     model: Optional[str]
-    firstUsedDate: Optional[str]
+    firstUsedDate: Optional[datetime]
     fuelType: Optional[str]
     primaryColour: Optional[str]
-    registrationDate: Optional[str]
-    manufactureDate: Optional[str]
+    registrationDate: Optional[datetime]
+    manufactureDate: Optional[datetime]
     engineSize: Optional[str]
     hasOutstandingRecall: VehicleHasOutstandingRecall
     motTests: List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]] = field(
         default_factory=list
     )
-
-    def __post_init__(self):
-        self.firstUsedDate = parse_datetime(self.firstUsedDate)
-        self.registrationDate = parse_datetime(self.registrationDate)
-        self.manufactureDate = parse_datetime(self.manufactureDate)
 
 
 @dataclass
@@ -227,19 +210,13 @@ class NewRegVehicleResponse:
     registration: Optional[str]
     make: Optional[str]
     model: Optional[str]
-    manufactureYear: Optional[str]
+    manufactureYear: Optional[datetime]
     fuelType: Optional[str]
     primaryColour: Optional[str]
-    registrationDate: Optional[str]
-    manufactureDate: Optional[str]
-    motTestDueDate: Optional[str]
+    registrationDate: Optional[datetime]
+    manufactureDate: Optional[datetime]
+    motTestDueDate: Optional[datetime]
     hasOutstandingRecall: VehicleHasOutstandingRecall
-
-    def __post_init__(self):
-        self.manufactureYear = parse_datetime(self.manufactureYear)
-        self.registrationDate = parse_datetime(self.registrationDate)
-        self.manufactureDate = parse_datetime(self.manufactureDate)
-        self.motTestDueDate = parse_datetime(self.motTestDueDate)
 
 
 @dataclass
@@ -257,10 +234,7 @@ class FileResponse:
     filename: str
     downloadUrl: str
     fileSize: int
-    fileCreatedOn: str
-
-    def __post_init__(self):
-        self.fileCreatedOn = parse_datetime(self.fileCreatedOn)
+    fileCreatedOn: datetime
 
 
 @dataclass
@@ -277,10 +251,8 @@ class BulkDownloadResponse:
     delta: List[FileResponse]
 
 
-def parse_datetime(date_string: Optional[str]) -> Optional[datetime]:
-    """Parse string to datetime object."""
-    if date_string is None:
-        return None
+def cast_str_to_datetime(date_string: str) -> datetime:
+    """Cast string to datetime object."""
     if len(date_string) == 4:
         return datetime.strptime(date_string, "%Y")
     elif len(date_string) == 10:
@@ -356,26 +328,39 @@ class MOTHistory:
                 )
 
     @staticmethod
-    async def _try_parse_dataclass(
-        data: Dict[str, Any], dataclasse_types: List[Type]
+    async def _try_cast_dataclass(
+        data: Dict[str, Any], dataclasses: List[Type[Any]]
     ) -> Any:
-        """Try to parse data into one of the provided dataclasses."""
-        for dataclass_type in dataclasse_types:
+        """Try to cast data into one of the provided dataclasses."""
+        for dc in dataclasses:
+            # Get the type hints for the dataclass fields
+            type_hints = getattr(dc, "__annotations__", {})
+
+            # Convert datetime strings to actual datetime objects based on the type hints
+            for key, value in data.items():
+                if isinstance(value, str):
+                    field_type = type_hints.get(key, None)
+                    if field_type in {datetime, Optional[datetime]}:
+                        try:
+                            data[key] = cast_str_to_datetime(value)
+                        except ValueError:
+                            pass  # If it's not a datetime string, continue without raising error
+
             try:
-                return dataclass_type(**data)
+                return dc(**data)
             except TypeError:
                 continue
         raise ValueError("Unexpected response format")
 
-    async def _try_parse_mot_class(
-        self, response_json
+    async def _try_cast_mot_class(
+        self, response_json: Dict[str, Any]
     ) -> List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]]:
-        """Try to parse motTests attribute to applicable class."""
+        """Try to cast motTests attribute to applicable class."""
         mot_tests_data = response_json.get("motTests", [])
         parsed_mot_tests = []
         for mot_test in mot_tests_data:
             try:
-                mot = await self._try_parse_dataclass(
+                mot = await self._try_cast_dataclass(
                     mot_test, [DVSAMotTest, DVANIMotTest, CVSMotTest]
                 )
                 parsed_mot_tests.append(mot)
@@ -393,12 +378,12 @@ class MOTHistory:
         if isinstance(response_json, ErrorResponse):
             return response_json
 
-        # Try to parse motTests attribute to applicable class
+        # Try to cast motTests attribute to an applicable class
         if "motTests" in response_json:
-            response_json["motTests"] = await self._try_parse_mot_class(response_json)
+            response_json["motTests"] = await self._try_cast_mot_class(response_json)
 
-        # Try parsing the response into the possible dataclasses
-        return await self._try_parse_dataclass(
+        # Try casting the full response to an applicable class
+        classified_response = await self._try_cast_dataclass(
             response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
         )
 
@@ -412,12 +397,12 @@ class MOTHistory:
         if isinstance(response_json, ErrorResponse):
             return response_json
 
-        # Try to parse motTests attribute to applicable class
+        # Try to cast motTests attribute to an applicable class
         if "motTests" in response_json:
-            response_json["motTests"] = await self._try_parse_mot_class(response_json)
+            response_json["motTests"] = await self._try_cast_mot_class(response_json)
 
-        # Try parsing the response into the possible dataclasses
-        return await self._try_parse_dataclass(
+        # Try casting the full response to an applicable class
+        classified_response = await self._try_cast_dataclass(
             response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
         )
 
@@ -429,12 +414,18 @@ class MOTHistory:
         if isinstance(response_json, ErrorResponse):
             return response_json
 
-        bulk = []
-        for file in response_json.get("bulk", []):
-            bulk.append(FileResponse(**file))
+        if "bulk" in response_json and "delta" in response_json:
+            # cast fileCreatedOn to datetime
+            for file in response_json["bulk"]:
+                file["fileCreatedOn"] = cast_str_to_datetime(file["fileCreatedOn"])
+            for file in response_json["delta"]:
+                file["fileCreatedOn"] = cast_str_to_datetime(file["fileCreatedOn"])
 
-        delta = []
-        for file in response_json.get("delta", []):
-            delta.append(FileResponse(**file))
+            bulk = [FileResponse(**file) for file in response_json["bulk"]]
+            delta = [FileResponse(**file) for file in response_json["delta"]]
+            return BulkDownloadResponse(bulk=bulk, delta=delta)
 
-        return BulkDownloadResponse(bulk=bulk, delta=delta)
+        # If the response doesn't match expected structure
+        return ErrorResponse(
+            status_code=500, message="Unexpected response format", errors=None
+        )
