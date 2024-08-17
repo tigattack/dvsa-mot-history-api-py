@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Literal, Optional, Type, Union
 
 import aiohttp
 from msal import ConfidentialClientApplication
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic.dataclasses import dataclass
 
 
@@ -96,8 +96,16 @@ class DVSAMotTest:
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
-    dataSource: Literal[MotTestDataSource.DVSA]
+    dataSource: MotTestDataSource
     defects: List[MotTestDefect] = Field(default_factory=list)
+
+    @field_validator("dataSource", mode="before")
+    def validate_data_source(cls, v: str) -> Literal[MotTestDataSource.DVSA]:
+        if v != MotTestDataSource.DVSA.value:
+            raise ValueError(
+                f"Invalid value '{v}' for dataSource. Expected '{MotTestDataSource.DVSA.value}'."
+            )
+        return MotTestDataSource.DVSA
 
 
 @dataclass
@@ -123,7 +131,15 @@ class DVANIMotTest:
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
-    dataSource: Literal[MotTestDataSource.DVA_NI]
+    dataSource: MotTestDataSource
+
+    @field_validator("dataSource", mode="before")
+    def validate_data_source(cls, v: str) -> Literal[MotTestDataSource.DVA_NI]:
+        if v != MotTestDataSource.DVA_NI.value:
+            raise ValueError(
+                f"Invalid value '{v}' for dataSource. Expected '{MotTestDataSource.DVA_NI.value}'."
+            )
+        return MotTestDataSource.DVA_NI
 
 
 @dataclass
@@ -152,8 +168,16 @@ class CVSMotTest:
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
     location: Optional[str]
-    dataSource: Literal[MotTestDataSource.CVS]
+    dataSource: MotTestDataSource
     defects: List[MotTestDefect] = Field(default_factory=list)
+
+    @field_validator("dataSource", mode="before")
+    def validate_data_source(cls, v: str) -> Literal[MotTestDataSource.CVS]:
+        if v != MotTestDataSource.CVS.value:
+            raise ValueError(
+                f"Invalid value '{v}' for dataSource. Expected '{MotTestDataSource.CVS.value}'."
+            )
+        return MotTestDataSource.CVS
 
 
 @dataclass
