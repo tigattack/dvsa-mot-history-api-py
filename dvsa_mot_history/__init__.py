@@ -285,7 +285,7 @@ class MOTHistory:
         if not token.get("access_token"):
             raise Exception("Failed to obtain access token")
 
-        return token["access_token"]
+        return str(token["access_token"])
 
     async def _get_auth_headers(self) -> Dict[str, str]:
         """Generate the headers required for API requests."""
@@ -302,13 +302,15 @@ class MOTHistory:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 if response.status == 200:  # noqa: PLR2004
-                    return await response.json()
+                    response_json_success: Dict[str, Any] = await response.json()
+                    return response_json_success
+
                 elif response.status in {400, 404, 500}:
-                    response_json = await response.json()
+                    response_json_err: Dict[str, Any] = await response.json()
                     return ErrorResponse(
                         status_code=response.status,
-                        message=response_json.get("message", "Unknown error"),
-                        errors=response_json.get("errors"),
+                        message=response_json_err.get("message", "Unknown error"),
+                        errors=response_json_err.get("errors"),
                     )
                 response.raise_for_status()
                 return ErrorResponse(
@@ -362,6 +364,13 @@ class MOTHistory:
             response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
         )
 
+        if isinstance(
+            classified_response, VehicleWithMotResponse | NewRegVehicleResponse
+        ):
+            return classified_response
+
+        raise ValueError(f"Unexpected response format: {response_json}")
+
     async def get_vehicle_history_by_vin(
         self, vin: str
     ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
@@ -380,6 +389,13 @@ class MOTHistory:
         classified_response = await self._try_cast_dataclass(
             response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
         )
+
+        if isinstance(
+            classified_response, VehicleWithMotResponse | NewRegVehicleResponse
+        ):
+            return classified_response
+
+        raise ValueError(f"Unexpected response format: {response_json}")
 
     async def get_bulk_download(self) -> Union[BulkDownloadResponse, ErrorResponse]:
         """Get MOT history in bulk."""
