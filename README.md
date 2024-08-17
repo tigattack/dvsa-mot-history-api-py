@@ -1,12 +1,12 @@
 # DVSA MOT History Python SDK
 
-`dvsa_mot_history` is a Python SDK that wraps the DVSA MOT History API, allowing you to easily interact with the service to retrieve MOT history, test results, and bulk downloads for vehicles registered with DVSA, DVA Northern Ireland, or the Commercial Vehicle Service.
+`dvsa_mot_history` is a Python SDK that provides a simple interface for interacting with the DVSA MOT History API, allowing retrieval of MOT history, test results, and bulk downloads for vehicles registered with DVSA, DVA Northern Ireland, or the Commercial Vehicle Service.
 
 ## Features
 
 - **Retrieve Vehicle MOT History by Registration:** Fetch detailed MOT history using a vehicle's registration number.
 - **Retrieve Vehicle MOT History by VIN:** Fetch detailed MOT history using a vehicle's VIN.
-- **Bulk Download of MOT History Data:** Retrieve bulk MOT history data files for processing.
+- **Bulk Download of MOT History Data:** Retrieve bulk MOT history data files for further processing.
 
 ## Installation
 
@@ -20,7 +20,7 @@ pip install dvsa_mot_history
 
 ### Initialisation
 
-To use the `MOTHistory` class, you need to provide the `client_id`, `client_secret`, `tenant_id`, and `api_key` obtained from the DVSA API service.
+To use the `MOTHistory` class, you'll need the `client_id`, `client_secret`, `tenant_id`, and `api_key` credentials provided by the DVSA API service.
 
 ```python
 from dvsa_mot_history import MOTHistory
@@ -92,22 +92,22 @@ asyncio.run(download_bulk_mot_history())
 
 ### MOT Test Classes
 
-- **`DVSAMotTest`**
-- **`DVANIMotTest`**
-- **`CVSMotTest`**
+- `DVSAMotTest`
+- `DVANIMotTest`
+- `CVSMotTest`
 
-These classes represent the MOT test results from the respective agencies, containing details such as the test result, odometer reading, defects, and more.
+These classes represent the MOT test results from their respective agencies, containing details such as the test result, odometer readings, defects, and more.
 
 ### Vehicle Response Classes
 
-- **`VehicleWithMotResponse`**
-- **`NewRegVehicleResponse`**
+- `VehicleWithMotResponse`
+- `NewRegVehicleResponse`
 
-These classes encapsulate the vehicle information, including its make, model, registration details, and a list of MOT tests.
+These classes encapsulate vehicle information, including the make, model, registration details, and a list of MOT tests.
 
 ### Error Handling
 
-The **`ErrorResponse`** class is used to handle errors returned by the API, providing details about the error, including the status code and message.
+The `ErrorResponse` class handles errors returned by the API, providing details about the error, including the status code and message.
 
 ## License
 
