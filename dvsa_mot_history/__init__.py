@@ -365,8 +365,10 @@ class MOTHistory:
                     mot_test, [DVSAMotTest, DVANIMotTest, CVSMotTest]
                 )
                 parsed_mot_tests.append(mot)
-            except ValueError:
-                raise ValueError(f"Unexpected response format for motTest: {mot_test}")
+            except ValueError as exc:
+                raise ValueError(
+                    f"Unexpected response format for motTest: {mot_test}"
+                ) from exc
         return parsed_mot_tests
 
     async def get_vehicle_history_by_registration(
