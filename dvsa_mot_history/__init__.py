@@ -1,6 +1,6 @@
 """Wrapper for DVSA MOT History API"""
 
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Type, Union
 
@@ -91,7 +91,7 @@ class DVSAMotTest:
 
     completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[datetime]
+    expiryDate: Optional[date]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
@@ -118,7 +118,7 @@ class DVANIMotTest:
 
     completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[datetime]
+    expiryDate: Optional[date]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
@@ -146,7 +146,7 @@ class CVSMotTest:
 
     completedDate: datetime
     testResult: MotTestTestResult
-    expiryDate: Optional[datetime]
+    expiryDate: Optional[date]
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
@@ -178,11 +178,11 @@ class VehicleWithMotResponse:
     registration: Optional[str]
     make: Optional[str]
     model: Optional[str]
-    firstUsedDate: Optional[datetime]
+    firstUsedDate: Optional[date]
     fuelType: Optional[str]
     primaryColour: Optional[str]
-    registrationDate: Optional[datetime]
-    manufactureDate: Optional[datetime]
+    registrationDate: Optional[date]
+    manufactureDate: Optional[date]
     engineSize: Optional[str]
     hasOutstandingRecall: VehicleHasOutstandingRecall
     motTests: List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]] = Field(
@@ -211,12 +211,12 @@ class NewRegVehicleResponse:
     registration: Optional[str]
     make: Optional[str]
     model: Optional[str]
-    manufactureYear: Optional[datetime]
+    manufactureYear: Optional[date]
     fuelType: Optional[str]
     primaryColour: Optional[str]
-    registrationDate: Optional[datetime]
-    manufactureDate: Optional[datetime]
-    motTestDueDate: Optional[datetime]
+    registrationDate: Optional[date]
+    manufactureDate: Optional[date]
+    motTestDueDate: Optional[date]
     hasOutstandingRecall: VehicleHasOutstandingRecall
 
 
@@ -235,7 +235,7 @@ class FileResponse:
     filename: str
     downloadUrl: str
     fileSize: int
-    fileCreatedOn: datetime
+    fileCreatedOn: date
 
 
 @dataclass
