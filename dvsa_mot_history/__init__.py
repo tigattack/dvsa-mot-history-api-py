@@ -1,12 +1,13 @@
 """Wrapper for DVSA MOT History API"""
 
-from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional, Type, Union
 
 import aiohttp
 from msal import ConfidentialClientApplication
+from pydantic import Field
+from pydantic.dataclasses import dataclass
 
 
 class MotTestTestResult(Enum):
@@ -96,7 +97,7 @@ class DVSAMotTest:
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[int]
     dataSource: Literal[MotTestDataSource.DVSA]
-    defects: List[MotTestDefect] = field(default_factory=list)
+    defects: List[MotTestDefect] = Field(default_factory=list)
 
 
 @dataclass
@@ -152,7 +153,7 @@ class CVSMotTest:
     motTestNumber: Optional[int]
     location: Optional[str]
     dataSource: Literal[MotTestDataSource.CVS]
-    defects: List[MotTestDefect] = field(default_factory=list)
+    defects: List[MotTestDefect] = Field(default_factory=list)
 
 
 @dataclass
@@ -184,7 +185,7 @@ class VehicleWithMotResponse:
     manufactureDate: Optional[datetime]
     engineSize: Optional[str]
     hasOutstandingRecall: VehicleHasOutstandingRecall
-    motTests: List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]] = field(
+    motTests: List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]] = Field(
         default_factory=list
     )
 
@@ -249,19 +250,6 @@ class BulkDownloadResponse:
 
     bulk: List[FileResponse]
     delta: List[FileResponse]
-
-
-def cast_str_to_datetime(date_string: str) -> datetime:
-    """Cast string to datetime object."""
-    if len(date_string) == 4:
-        return datetime.strptime(date_string, "%Y")
-    elif len(date_string) == 10:
-        return datetime.strptime(date_string, "%Y-%m-%d")
-    elif len(date_string) == 19:
-        return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S")
-    elif len(date_string) == 24 and date_string.endswith("Z"):
-        return datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
-    raise ValueError(f"Unexpected date string: {date_string}")
 
 
 class MOTHistory:
@@ -333,19 +321,6 @@ class MOTHistory:
     ) -> Any:
         """Try to cast data into one of the provided dataclasses."""
         for dc in dataclasses:
-            # Get the type hints for the dataclass fields
-            type_hints = getattr(dc, "__annotations__", {})
-
-            # Convert datetime strings to actual datetime objects based on the type hints
-            for key, value in data.items():
-                if isinstance(value, str):
-                    field_type = type_hints.get(key, None)
-                    if field_type in {datetime, Optional[datetime]}:
-                        try:
-                            data[key] = cast_str_to_datetime(value)
-                        except ValueError:
-                            pass  # If it's not a datetime string, continue without raising error
-
             try:
                 return dc(**data)
             except TypeError:
@@ -415,12 +390,6 @@ class MOTHistory:
             return response_json
 
         if "bulk" in response_json and "delta" in response_json:
-            # cast fileCreatedOn to datetime
-            for file in response_json["bulk"]:
-                file["fileCreatedOn"] = cast_str_to_datetime(file["fileCreatedOn"])
-            for file in response_json["delta"]:
-                file["fileCreatedOn"] = cast_str_to_datetime(file["fileCreatedOn"])
-
             bulk = [FileResponse(**file) for file in response_json["bulk"]]
             delta = [FileResponse(**file) for file in response_json["delta"]]
             return BulkDownloadResponse(bulk=bulk, delta=delta)

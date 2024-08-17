@@ -13,6 +13,8 @@ packages = [
 python = "^3.12"
 msal = "^1.30.0"
 aiohttp = "^3.10.3"
+pydantic = "^2.8.2"
+
 
 [build-system]
 requires = ["poetry-core"]
