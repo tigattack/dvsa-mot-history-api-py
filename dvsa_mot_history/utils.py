@@ -1,34 +1,33 @@
 """Utility functions for the DVSA MOT History API"""
 
-from typing import Any, Dict, List, Type, Union
+from typing import Any, Dict, List, Union
 
+from .enums import MotTestDataSource
 from .models import CVSMotTest, DVANIMotTest, DVSAMotTest
-
-
-async def try_cast_dataclass(data: Dict[str, Any], dataclasses: List[Type[Any]]) -> Any:
-    """Attempt to cast a dictionary into one of the provided dataclasses"""
-    for dc in dataclasses:
-        try:
-            return dc(**data)
-        except TypeError:
-            continue
-    raise ValueError("Unexpected response format")
 
 
 async def try_cast_mot_class(
     response_json: Dict[str, Any],
 ) -> List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]]:
-    """Attempt to cast the 'motTests' attribute to the applicable MOT test class"""
+    """Attempt to cast the 'motTests' attribute to the applicable MOT test class based on the 'dataSource' attribute."""
     mot_tests_data = response_json.get("motTests", [])
     parsed_mot_tests = []
+
     for mot_test in mot_tests_data:
-        try:
-            mot = await try_cast_dataclass(
-                mot_test, [DVSAMotTest, DVANIMotTest, CVSMotTest]
-            )
-            parsed_mot_tests.append(mot)
-        except ValueError as exc:
+        mot: Union[DVSAMotTest, DVANIMotTest, CVSMotTest]
+        data_source = mot_test.get("dataSource")
+
+        if data_source == MotTestDataSource.DVSA.value:
+            mot = DVSAMotTest(**mot_test)
+        elif data_source == MotTestDataSource.DVA_NI.value:
+            mot = DVANIMotTest(**mot_test)
+        elif data_source == MotTestDataSource.CVS.value:
+            mot = CVSMotTest(**mot_test)
+        else:
             raise ValueError(
-                f"Unexpected response format for motTest: {mot_test}"
-            ) from exc
+                f"Unexpected value '{data_source}' for dataSource in motTest: {mot_test}"
+            )
+
+        parsed_mot_tests.append(mot)
+
     return parsed_mot_tests

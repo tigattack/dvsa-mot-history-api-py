@@ -13,7 +13,7 @@ from .models import (
     NewRegVehicleResponse,
     VehicleWithMotResponse,
 )
-from .utils import try_cast_dataclass, try_cast_mot_class
+from .utils import try_cast_mot_class
 
 
 class MOTHistory:
@@ -88,19 +88,16 @@ class MOTHistory:
         if isinstance(response_json, ErrorResponse):
             return response_json
 
-        if "motTests" in response_json:
+        classified_response: Union[VehicleWithMotResponse, NewRegVehicleResponse]
+
+        if hasattr(response_json, "motTests"):
             response_json["motTests"] = await try_cast_mot_class(response_json)
+            classified_response = VehicleWithMotResponse(**response_json)
 
-        classified_response = await try_cast_dataclass(
-            response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
-        )
+        else:
+            classified_response = NewRegVehicleResponse(**response_json)
 
-        if isinstance(
-            classified_response, (VehicleWithMotResponse, NewRegVehicleResponse)
-        ):
-            return classified_response
-
-        raise ValueError(f"Unexpected response format: {response_json}")
+        return classified_response
 
     async def get_vehicle_history_by_vin(
         self, vin: str
@@ -112,19 +109,16 @@ class MOTHistory:
         if isinstance(response_json, ErrorResponse):
             return response_json
 
-        if "motTests" in response_json:
+        classified_response: Union[VehicleWithMotResponse, NewRegVehicleResponse]
+
+        if hasattr(response_json, "motTests"):
             response_json["motTests"] = await try_cast_mot_class(response_json)
+            classified_response = VehicleWithMotResponse(**response_json)
 
-        classified_response = await try_cast_dataclass(
-            response_json, [VehicleWithMotResponse, NewRegVehicleResponse]
-        )
+        else:
+            classified_response = NewRegVehicleResponse(**response_json)
 
-        if isinstance(
-            classified_response, (VehicleWithMotResponse, NewRegVehicleResponse)
-        ):
-            return classified_response
-
-        raise ValueError(f"Unexpected response format: {response_json}")
+        return classified_response
 
     async def get_bulk_download(self) -> Union[BulkDownloadResponse, ErrorResponse]:
         """Get MOT history in bulk."""
