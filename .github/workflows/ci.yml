@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  package_name: dvsa_mot_history
+
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lint with ruff
+        uses: jpetrucciani/ruff-check@main
+        with:
+          path: ${{ env.package_name }}
+
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Setup python and restore poetry
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+          cache: "poetry"
+
+      - name: Lint with mypy
+        run: |
+          poetry install --with dev
+          poetry run mypy --strict ${{ env.package_name }}
