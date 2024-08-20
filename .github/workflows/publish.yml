@@ -21,7 +21,7 @@ jobs:
           python-version-file: "pyproject.toml"
           cache: "poetry"
 
-      - name: Publish package
+      - name: Build package
         run: poetry build
 
       - name: Publish package to PyPI
