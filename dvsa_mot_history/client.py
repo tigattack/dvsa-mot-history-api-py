@@ -78,26 +78,28 @@ class MOTHistory:
                     status_code=response.status, message="Unknown error", errors=None
                 )
 
+    async def _process_vehicle_history_response(
+        self, response_json: Dict[str, Any] | ErrorResponse
+    ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
+        """Process the vehicle history response."""
+        if isinstance(response_json, ErrorResponse):
+            return response_json
+
+        if "motTests" in response_json:
+            response_json["motTests"] = await try_cast_mot_class(response_json)
+            return VehicleWithMotResponse(**response_json)
+        elif "motTestDueDate" in response_json:
+            return NewRegVehicleResponse(**response_json)
+
+        raise ValueError("Unexpected response format")
+
     async def get_vehicle_history_by_registration(
         self, registration: str
     ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
         """Get MOT history for a vehicle by registration."""
         url = build_url(VEHICLE_BY_REGISTRATION, registration=registration)
         response_json = await self._make_api_request(url)
-
-        if isinstance(response_json, ErrorResponse):
-            return response_json
-
-        classified_response: Union[VehicleWithMotResponse, NewRegVehicleResponse]
-
-        if hasattr(response_json, "motTests"):
-            response_json["motTests"] = await try_cast_mot_class(response_json)
-            classified_response = VehicleWithMotResponse(**response_json)
-
-        else:
-            classified_response = NewRegVehicleResponse(**response_json)
-
-        return classified_response
+        return await self._process_vehicle_history_response(response_json)
 
     async def get_vehicle_history_by_vin(
         self, vin: str
@@ -105,20 +107,7 @@ class MOTHistory:
         """Get MOT history for a vehicle by VIN."""
         url = build_url(VEHICLE_BY_VIN, vin=vin)
         response_json = await self._make_api_request(url)
-
-        if isinstance(response_json, ErrorResponse):
-            return response_json
-
-        classified_response: Union[VehicleWithMotResponse, NewRegVehicleResponse]
-
-        if hasattr(response_json, "motTests"):
-            response_json["motTests"] = await try_cast_mot_class(response_json)
-            classified_response = VehicleWithMotResponse(**response_json)
-
-        else:
-            classified_response = NewRegVehicleResponse(**response_json)
-
-        return classified_response
+        return await self._process_vehicle_history_response(response_json)
 
     async def get_bulk_download(self) -> Union[BulkDownloadResponse, ErrorResponse]:
         """Get MOT history in bulk."""
