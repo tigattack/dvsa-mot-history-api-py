@@ -61,7 +61,7 @@ class DVSAMotTest:
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
-    motTestNumber: Optional[int]
+    motTestNumber: Optional[str]
     dataSource: MotTestDataSource
     defects: List[MotTestDefect] = Field(default_factory=list)
 
@@ -96,7 +96,7 @@ class DVANIMotTest:
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
-    motTestNumber: Optional[int]
+    motTestNumber: Optional[str]
     dataSource: MotTestDataSource
 
     @field_validator("dataSource", mode="before")
@@ -132,7 +132,7 @@ class CVSMotTest:
     odometerValue: Optional[int]
     odometerUnit: Optional[MotTestOdometerUnit]
     odometerResultType: MotTestOdometerResultType
-    motTestNumber: Optional[int]
+    motTestNumber: Optional[str]
     location: Optional[str]
     dataSource: MotTestDataSource
     defects: List[MotTestDefect] = Field(default_factory=list)
