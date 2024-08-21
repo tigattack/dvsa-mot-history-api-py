@@ -201,7 +201,7 @@ class NewRegVehicleResponse:
     registration: Optional[str]
     make: Optional[str]
     model: Optional[str]
-    manufactureYear: Optional[date]
+    manufactureYear: Optional[int]
     fuelType: Optional[str]
     primaryColour: Optional[str]
     registrationDate: Optional[date]
