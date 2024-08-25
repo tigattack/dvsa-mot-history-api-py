@@ -1,0 +1,14 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended"
+  ],
+  packageRules: [
+    // Auto update Poetry 'dev' dependency group
+    {
+      matchDepTypes: "dev",
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true
+    }
+  ]
+}
