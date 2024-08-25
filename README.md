@@ -1,5 +1,9 @@
 # DVSA MOT History Python SDK
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/tigattack/dvsa-mot-history-api-py/lint.yml?branch=main&style=for-the-badge&logo=github&label=lint)
+![PyPI - Python Versions](https://img.shields.io/pypi/pyversions/dvsa-mot-history?style=for-the-badge&logo=python&link=https%3A%2F%2Fpypi.org%2Fproject%2Fdvsa-mot-history)
+![PyPI - Version](https://img.shields.io/pypi/v/dvsa-mot-history?style=for-the-badge&logo=python&link=https%3A%2F%2Fpypi.org%2Fproject%2Fdvsa-mot-history)
+
 `dvsa_mot_history` is a Python SDK that provides a simple interface for interacting with the DVSA MOT History API, allowing retrieval of MOT history, test results, and bulk downloads for vehicles registered with DVSA, DVA Northern Ireland, or the Commercial Vehicle Service.
 
 ## Features

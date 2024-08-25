@@ -1,6 +1,10 @@
 [project]
 requires-python = ">=3.8"
 
+[project.urls]
+Repository = "https://github.com/tigattack/dvsa-mot-history-api-py"
+Issues = "https://github.com/tigattack/dvsa-mot-history-api-py/issues"
+
 [tool.poetry]
 name = "dvsa_mot_history"
 version = "0.1.2"
