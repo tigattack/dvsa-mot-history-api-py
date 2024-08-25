@@ -4,8 +4,9 @@
     "config:recommended"
   ],
   packageRules: [
+    // Auto update Poetry 'dev' dependency group
     {
-      matchDepTypes: "dev-dependencies",
+      matchDepTypes: "dev",
       matchUpdateTypes: ["minor", "patch"],
       automerge: true
     }
