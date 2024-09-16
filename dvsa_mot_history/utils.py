@@ -3,18 +3,18 @@
 from typing import Any, Dict, List, Union
 
 from .enums import MotTestDataSource
-from .models import CVSMotTest, DVANIMotTest, DVSAMotTest
+from .models import CVSMotTest, DVANIMotTest, DVSAMotTest, MotTestType
 
 
 async def try_cast_mot_class(
     response_json: Dict[str, Any],
-) -> List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]]:
+) -> List[MotTestType]:
     """Attempt to cast the 'motTests' attribute to the applicable MOT test class based on the 'dataSource' attribute."""
     mot_tests_data = response_json.get("motTests", [])
     parsed_mot_tests = []
 
     for mot_test in mot_tests_data:
-        mot: Union[DVSAMotTest, DVANIMotTest, CVSMotTest]
+        mot: MotTestType
         data_source = mot_test.get("dataSource")
 
         if data_source == MotTestDataSource.DVSA.value:

@@ -9,6 +9,7 @@ from .models import (
     ErrorResponse,
     FileResponse,
     MotTestDefect,
+    MotTestType,
     NewRegVehicleResponse,
     VehicleWithMotResponse,
 )
@@ -27,6 +28,7 @@ __all__ = [
     "DVSAMotTest",
     "DVANIMotTest",
     "CVSMotTest",
+    "MotTestType",
     "VehicleWithMotResponse",
     "NewRegVehicleResponse",
     "FileResponse",
