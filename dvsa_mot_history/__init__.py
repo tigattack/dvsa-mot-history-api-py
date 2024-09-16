@@ -6,7 +6,6 @@ from .models import (
     CVSMotTest,
     DVANIMotTest,
     DVSAMotTest,
-    ErrorResponse,
     FileResponse,
     MotTestDefect,
     MotTestType,
@@ -24,7 +23,6 @@ from .enums import (
 
 __all__ = [
     "MOTHistory",
-    "ErrorResponse",
     "MotTestDefect",
     "DVSAMotTest",
     "DVANIMotTest",

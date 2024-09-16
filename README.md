@@ -43,16 +43,16 @@ To fetch MOT history for a vehicle using its registration number:
 
 ```python
 import asyncio
-from dvsa_mot_history import ErrorResponse
+from dvsa_mot_history.errors import VehicleHistoryError
 
 async def get_mot_history_by_registration():
-    response = await mot_history.get_vehicle_history_by_registration("AB12CDE")
-    if isinstance(response, ErrorResponse):
-        print(f"Error: {response.message}")
-    else:
+    try:
+        response = await mot_history.get_vehicle_history_by_registration("AB12CDE")
         print(f"Vehicle: {response.make} {response.model}")
         for test in response.motTests:
             print(f"Test Date: {test.completedDate}, Result: {test.testResult}")
+    except VehicleHistoryError as e:
+        print(f"Error: {e.message}")
 
 asyncio.run(get_mot_history_by_registration())
 ```
@@ -63,13 +63,13 @@ To fetch MOT history for a vehicle using its VIN:
 
 ```python
 async def get_mot_history_by_vin():
-    response = await mot_history.get_vehicle_history_by_vin("12345678901234567")
-    if isinstance(response, ErrorResponse):
-        print(f"Error: {response.message}")
-    else:
+    try:
+        response = await mot_history.get_vehicle_history_by_vin("12345678901234567")
         print(f"Vehicle: {response.make} {response.model}")
         for test in response.motTests:
             print(f"Test Date: {test.completedDate}, Result: {test.testResult}")
+    except VehicleHistoryError as e:
+        print(f"Error: {e.message}")
 
 asyncio.run(get_mot_history_by_vin())
 ```
@@ -80,14 +80,14 @@ To download bulk MOT history data:
 
 ```python
 async def download_bulk_mot_history():
-    response = await mot_history.get_bulk_download()
-    if isinstance(response, ErrorResponse):
-        print(f"Error: {response.message}")
-    else:
+    try:
+        response = await mot_history.get_bulk_download()
         for file in response.bulk:
             print(f"Bulk File: {file.filename}, URL: {file.downloadUrl}")
         for file in response.delta:
             print(f"Delta File: {file.filename}, URL: {file.downloadUrl}")
+    except VehicleHistoryError as e:
+        print(f"Error: {e.message}")
 
 asyncio.run(download_bulk_mot_history())
 ```
@@ -115,7 +115,7 @@ These classes encapsulate vehicle information, including the make, model, regist
 
 ### Error Handling
 
-The `ErrorResponse` class handles errors returned by the API, providing details about the error, including the status code and message.
+The `VehicleHistoryError` exception class handles errors returned by the API, providing details about the error, including the status code and message. The previous ErrorResponse class has been removed, and error handling is now done through exceptions.
 
 ## License
 

@@ -1,14 +1,15 @@
 """Client for DVSA MOT History API"""
 
-from typing import Any, Union
+from typing import Any
 
 import aiohttp
 from msal import ConfidentialClientApplication
 
+from dvsa_mot_history.errors import VehicleHistoryError
+
 from .api import BULK_DOWNLOAD, VEHICLE_BY_REGISTRATION, VEHICLE_BY_VIN, build_url
 from .models import (
     BulkDownloadResponse,
-    ErrorResponse,
     FileResponse,
     NewRegVehicleResponse,
     VehicleWithMotResponse,
@@ -57,35 +58,33 @@ class MOTHistory:
         token = await self._get_access_token()
         return {"Authorization": f"Bearer {token}", "X-API-Key": self.api_key}
 
-    async def _make_api_request(self, url: str) -> Union[dict[str, Any], ErrorResponse]:
-        """Generic method to make API requests."""
+    async def _make_api_request(self, url: str) -> dict[str, Any]:
+        """Make API request and raise exceptions for errors."""
         headers = await self._get_auth_headers()
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
-                if response.status == 200:  # noqa: PLR2004
-                    response_json_success: dict[str, Any] = await response.json()
-                    return response_json_success
+                if response.status == 200:
+                    resp_json: dict[str, Any] = await response.json()
+                    return resp_json
 
-                elif response.status in {400, 404, 500}:
+                # Raise an error for known response statuses
+                if response.status in {400, 404, 500}:
                     response_json_err: dict[str, Any] = await response.json()
-                    return ErrorResponse(
+                    raise VehicleHistoryError(
                         status_code=response.status,
                         message=response_json_err.get("message", "Unknown error"),
                         errors=response_json_err.get("errors"),
                     )
-                response.raise_for_status()
-                return ErrorResponse(
-                    status_code=response.status, message="Unknown error", errors=None
-                )
+
+                # Raise an error for unknown response statuses
+                raise ValueError(f"Unexpected response status: {response.status}")
+
 
     async def _process_vehicle_history_response(
-        self, response_json: dict[str, Any] | ErrorResponse
+        self, response_json: dict[str, Any]
     ) -> VehicleResponseType:
         """Process the vehicle history response."""
-        if isinstance(response_json, ErrorResponse):
-            return response_json
-
         if "motTests" in response_json:
             response_json["motTests"] = await try_cast_mot_class(response_json)
             return VehicleWithMotResponse(**response_json)
@@ -110,19 +109,14 @@ class MOTHistory:
         response_json = await self._make_api_request(url)
         return await self._process_vehicle_history_response(response_json)
 
-    async def get_bulk_download(self) -> Union[BulkDownloadResponse, ErrorResponse]:
+    async def get_bulk_download(self) -> BulkDownloadResponse:
         """Get MOT history in bulk."""
         url = build_url(BULK_DOWNLOAD)
         response_json = await self._make_api_request(url)
-
-        if isinstance(response_json, ErrorResponse):
-            return response_json
 
         if "bulk" in response_json and "delta" in response_json:
             bulk = [FileResponse(**file) for file in response_json["bulk"]]
             delta = [FileResponse(**file) for file in response_json["delta"]]
             return BulkDownloadResponse(bulk=bulk, delta=delta)
 
-        return ErrorResponse(
-            status_code=500, message="Unexpected response format", errors=None
-        )
+        raise ValueError("Unexpected response format")
