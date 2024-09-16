@@ -1,14 +1,14 @@
 """Utility functions for the DVSA MOT History API"""
 
-from typing import Any, Dict, List
+from typing import Any
 
 from .enums import MotTestDataSource
 from .models import CVSMotTest, DVANIMotTest, DVSAMotTest, MotTestType
 
 
 async def try_cast_mot_class(
-    response_json: Dict[str, Any],
-) -> List[MotTestType]:
+    response_json: dict[str, Any],
+) -> list[MotTestType]:
     """Attempt to cast the 'motTests' attribute to the applicable MOT test class based on the 'dataSource' attribute."""
     mot_tests_data = response_json.get("motTests", [])
     parsed_mot_tests = []
