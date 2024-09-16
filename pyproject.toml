@@ -33,3 +33,6 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.mypy]
 disable_error_code = "import-untyped"
+
+[tool.ruff.lint]
+extend-select = ["UP", "PLR"]
