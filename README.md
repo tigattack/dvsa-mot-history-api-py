@@ -102,6 +102,8 @@ asyncio.run(download_bulk_mot_history())
 
 These classes represent the MOT test results from their respective agencies, containing details such as the test result, odometer readings, defects, and more.
 
+`MotTestType`: This is a type alias that encompasses the possible MOT test classes detailed above.
+
 ### Vehicle Response Classes
 
 - `VehicleWithMotResponse`
