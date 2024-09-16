@@ -65,7 +65,8 @@ class MOTHistory:
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 if response.status == 200:
-                    return await response.json()
+                    resp_json: dict[str, Any] = await response.json()
+                    return resp_json
 
                 # Raise an error for known response statuses
                 if response.status in {400, 404, 500}:
