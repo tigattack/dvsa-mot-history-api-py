@@ -46,6 +46,9 @@ class MOTHistory:
         """Obtain an access token using MSAL."""
         token = self.msal_app.acquire_token_for_client(scopes=[self.scope])
 
+        if token is None:
+            raise ValueError("Failed to obtain credentials, token is None")
+
         if not token.get("access_token"):
             raise ValueError(
                 "Failed to obtain credentials, access_token missing from response"
