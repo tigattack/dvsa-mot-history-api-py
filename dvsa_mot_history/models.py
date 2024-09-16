@@ -146,7 +146,7 @@ class CVSMotTest:
         return MotTestDataSource.CVS
 
 
-MotTestType = Union[DVSAMotTest, DVANIMotTest, CVSMotTest]
+MotTestType: TypeAlias = Union[DVSAMotTest, DVANIMotTest, CVSMotTest]
 
 
 @dataclass
