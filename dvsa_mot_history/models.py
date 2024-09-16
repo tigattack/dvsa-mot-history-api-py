@@ -19,7 +19,7 @@ from .enums import (
 class ErrorResponse:
     status_code: int
     message: str
-    errors: Optional[List[str]]
+    errors: Optional[list[str]]
 
 
 @dataclass
