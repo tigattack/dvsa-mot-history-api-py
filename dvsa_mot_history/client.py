@@ -12,8 +12,8 @@ from .models import (
     BulkDownloadResponse,
     FileResponse,
     NewRegVehicleResponse,
-    VehicleWithMotResponse,
     VehicleResponseType,
+    VehicleWithMotResponse,
 )
 from .utils import try_cast_mot_class
 
@@ -80,7 +80,6 @@ class MOTHistory:
                 # Raise an error for unknown response statuses
                 raise ValueError(f"Unexpected response status: {response.status}")
 
-
     async def _process_vehicle_history_response(
         self, response_json: dict[str, Any]
     ) -> VehicleResponseType:
@@ -101,9 +100,7 @@ class MOTHistory:
         response_json = await self._make_api_request(url)
         return await self._process_vehicle_history_response(response_json)
 
-    async def get_vehicle_history_by_vin(
-        self, vin: str
-    ) -> VehicleResponseType:
+    async def get_vehicle_history_by_vin(self, vin: str) -> VehicleResponseType:
         """Get MOT history for a vehicle by VIN."""
         url = build_url(VEHICLE_BY_VIN, vin=vin)
         response_json = await self._make_api_request(url)
