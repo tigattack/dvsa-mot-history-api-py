@@ -1,6 +1,6 @@
 """Utility functions for the DVSA MOT History API"""
 
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 from .enums import MotTestDataSource
 from .models import CVSMotTest, DVANIMotTest, DVSAMotTest, MotTestType
