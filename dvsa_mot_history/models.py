@@ -1,7 +1,7 @@
 """Data models for the DVSA MOT History API"""
 
 from datetime import date, datetime
-from typing import List, Literal, Optional, TypeAlias, Union
+from typing import Literal, Optional, TypeAlias, Union
 
 from pydantic import Field, field_validator
 from pydantic.dataclasses import dataclass
@@ -63,7 +63,7 @@ class DVSAMotTest:
     odometerResultType: MotTestOdometerResultType
     motTestNumber: Optional[str]
     dataSource: MotTestDataSource
-    defects: List[MotTestDefect] = Field(default_factory=list)
+    defects: list[MotTestDefect] = Field(default_factory=list)
 
     @field_validator("dataSource", mode="before")
     def validate_data_source(cls, v: str) -> Literal[MotTestDataSource.DVSA]:
@@ -135,7 +135,7 @@ class CVSMotTest:
     motTestNumber: Optional[str]
     location: Optional[str]
     dataSource: MotTestDataSource
-    defects: List[MotTestDefect] = Field(default_factory=list)
+    defects: list[MotTestDefect] = Field(default_factory=list)
 
     @field_validator("dataSource", mode="before")
     def validate_data_source(cls, v: str) -> Literal[MotTestDataSource.CVS]:
@@ -178,9 +178,7 @@ class VehicleWithMotResponse:
     manufactureDate: Optional[date]
     engineSize: Optional[str]
     hasOutstandingRecall: VehicleHasOutstandingRecall
-    motTests: List[MotTestType] = Field(
-        default_factory=list
-    )
+    motTests: list[MotTestType] = Field(default_factory=list)
 
 
 @dataclass
@@ -244,5 +242,5 @@ class BulkDownloadResponse:
         delta: Details about the delta files.
     """
 
-    bulk: List[FileResponse]
-    delta: List[FileResponse]
+    bulk: list[FileResponse]
+    delta: list[FileResponse]

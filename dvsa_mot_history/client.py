@@ -1,6 +1,6 @@
 """Client for DVSA MOT History API"""
 
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 import aiohttp
 from msal import ConfidentialClientApplication
@@ -52,23 +52,23 @@ class MOTHistory:
 
         return str(token["access_token"])
 
-    async def _get_auth_headers(self) -> Dict[str, str]:
+    async def _get_auth_headers(self) -> dict[str, str]:
         """Generate the headers required for API requests."""
         token = await self._get_access_token()
         return {"Authorization": f"Bearer {token}", "X-API-Key": self.api_key}
 
-    async def _make_api_request(self, url: str) -> Union[Dict[str, Any], ErrorResponse]:
+    async def _make_api_request(self, url: str) -> Union[dict[str, Any], ErrorResponse]:
         """Generic method to make API requests."""
         headers = await self._get_auth_headers()
 
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 if response.status == 200:  # noqa: PLR2004
-                    response_json_success: Dict[str, Any] = await response.json()
+                    response_json_success: dict[str, Any] = await response.json()
                     return response_json_success
 
                 elif response.status in {400, 404, 500}:
-                    response_json_err: Dict[str, Any] = await response.json()
+                    response_json_err: dict[str, Any] = await response.json()
                     return ErrorResponse(
                         status_code=response.status,
                         message=response_json_err.get("message", "Unknown error"),
@@ -80,7 +80,7 @@ class MOTHistory:
                 )
 
     async def _process_vehicle_history_response(
-        self, response_json: Dict[str, Any] | ErrorResponse
+        self, response_json: dict[str, Any] | ErrorResponse
     ) -> VehicleResponseType:
         """Process the vehicle history response."""
         if isinstance(response_json, ErrorResponse):
