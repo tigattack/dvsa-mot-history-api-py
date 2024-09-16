@@ -1,7 +1,7 @@
 """Data models for the DVSA MOT History API"""
 
 from datetime import date, datetime
-from typing import List, Literal, Optional, Union
+from typing import List, Literal, Optional, TypeAlias, Union
 
 from pydantic import Field, field_validator
 from pydantic.dataclasses import dataclass
@@ -211,6 +211,9 @@ class NewRegVehicleResponse:
     manufactureDate: Optional[date]
     motTestDueDate: Optional[date]
     hasOutstandingRecall: VehicleHasOutstandingRecall
+
+
+VehicleResponseType: TypeAlias = Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]
 
 
 @dataclass

@@ -12,6 +12,7 @@ from .models import (
     FileResponse,
     NewRegVehicleResponse,
     VehicleWithMotResponse,
+    VehicleResponseType,
 )
 from .utils import try_cast_mot_class
 
@@ -80,7 +81,7 @@ class MOTHistory:
 
     async def _process_vehicle_history_response(
         self, response_json: Dict[str, Any] | ErrorResponse
-    ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
+    ) -> VehicleResponseType:
         """Process the vehicle history response."""
         if isinstance(response_json, ErrorResponse):
             return response_json
@@ -95,7 +96,7 @@ class MOTHistory:
 
     async def get_vehicle_history_by_registration(
         self, registration: str
-    ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
+    ) -> VehicleResponseType:
         """Get MOT history for a vehicle by registration."""
         url = build_url(VEHICLE_BY_REGISTRATION, registration=registration)
         response_json = await self._make_api_request(url)
@@ -103,7 +104,7 @@ class MOTHistory:
 
     async def get_vehicle_history_by_vin(
         self, vin: str
-    ) -> Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]:
+    ) -> VehicleResponseType:
         """Get MOT history for a vehicle by VIN."""
         url = build_url(VEHICLE_BY_VIN, vin=vin)
         response_json = await self._make_api_request(url)

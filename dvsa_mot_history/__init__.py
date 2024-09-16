@@ -12,6 +12,7 @@ from .models import (
     MotTestType,
     NewRegVehicleResponse,
     VehicleWithMotResponse,
+    VehicleResponseType,
 )
 from .enums import (
     MotTestDataSource,
@@ -31,6 +32,7 @@ __all__ = [
     "MotTestType",
     "VehicleWithMotResponse",
     "NewRegVehicleResponse",
+    "VehicleResponseType",
     "FileResponse",
     "BulkDownloadResponse",
     "MotTestTestResult",

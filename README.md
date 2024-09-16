@@ -109,6 +109,8 @@ These classes represent the MOT test results from their respective agencies, con
 
 These classes encapsulate vehicle information, including the make, model, registration details, and a list of MOT tests.
 
+`VehicleResponseType`: This is a type alias that encompasses the possible vehicle response classes detailed above.
+
 ### Error Handling
 
 The `ErrorResponse` class handles errors returned by the API, providing details about the error, including the status code and message.
