@@ -16,13 +16,6 @@ from .enums import (
 
 
 @dataclass
-class ErrorResponse:
-    status_code: int
-    message: str
-    errors: Optional[list[str]]
-
-
-@dataclass
 class MotTestDefect:
     """
     Defects found during the MOT or annual test.
@@ -211,7 +204,7 @@ class NewRegVehicleResponse:
     hasOutstandingRecall: VehicleHasOutstandingRecall
 
 
-VehicleResponseType: TypeAlias = Union[VehicleWithMotResponse, NewRegVehicleResponse, ErrorResponse]
+VehicleResponseType: TypeAlias = Union[VehicleWithMotResponse, NewRegVehicleResponse]
 
 
 @dataclass
