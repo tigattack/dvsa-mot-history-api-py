@@ -146,6 +146,9 @@ class CVSMotTest:
         return MotTestDataSource.CVS
 
 
+MotTestType = Union[DVSAMotTest, DVANIMotTest, CVSMotTest]
+
+
 @dataclass
 class VehicleWithMotResponse:
     """
@@ -175,7 +178,7 @@ class VehicleWithMotResponse:
     manufactureDate: Optional[date]
     engineSize: Optional[str]
     hasOutstandingRecall: VehicleHasOutstandingRecall
-    motTests: List[Union[DVSAMotTest, DVANIMotTest, CVSMotTest]] = Field(
+    motTests: List[MotTestType] = Field(
         default_factory=list
     )
 
