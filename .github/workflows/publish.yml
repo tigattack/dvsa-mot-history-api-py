@@ -17,7 +17,6 @@ jobs:
         with:
           token: ${{ github.token }}
           tag: ${{ github.ref_name }}
-          excludeTypes: "build,other,style"
 
       - name: Create Release
         uses: ncipollo/release-action@v1
