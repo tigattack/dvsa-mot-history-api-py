@@ -8,6 +8,7 @@ from .enums import (
     MotTestTestResult,
     VehicleHasOutstandingRecall,
 )
+from .errors import VehicleHistoryError
 from .models import (
     BulkDownloadResponse,
     CVSMotTest,
@@ -36,6 +37,7 @@ __all__ = [
     "MotTestType",
     "NewRegVehicleResponse",
     "VehicleHasOutstandingRecall",
+    "VehicleHistoryError",
     "VehicleResponseType",
     "VehicleWithMotResponse",
 ]
