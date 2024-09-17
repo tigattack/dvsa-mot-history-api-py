@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2024-09-17
+### :memo: Documentation Changes
+- [`35b4c04`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/35b4c04b2fc8359b6d58e2c494640cc74c18a8c2) - **changelog**: add changes *(commit by [@tigattack](https://github.com/tigattack))*
+
+### :wrench: Chores
+- [`e484b4d`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/e484b4dca7c0aed836ad6cf7ce3a53c34ce157aa) - downgrade aiohttp min version *(commit by [@tigattack](https://github.com/tigattack))*
+- [`7d5d17b`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/7d5d17b9445bdd07140ceda2901645a83c0d3e3f) - bump version to 1.0.3 *(commit by [@tigattack](https://github.com/tigattack))*
+- [`82a9afe`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/82a9afe7fb9a61b69765d21034157875d1fea629) - add changelog URL to project *(commit by [@tigattack](https://github.com/tigattack))*
+- [`48744bb`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/48744bbe5e58f5168eb5935c285196ca1733416e) - **renovate**: use `chore` sem-commit type *(commit by [@tigattack](https://github.com/tigattack))*
+
+
 ## [1.0.2] - 2024-09-17
 ### :sparkles: New Features
 - [`4378ce9`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/4378ce9ffa5540e6b6d0f7a2969cb01ec43dfda6) - expose VehicleHistoryError class *(commit by [@tigattack](https://github.com/tigattack))*
@@ -74,3 +85,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.0]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/0.1.2...1.0.0
 [1.0.1]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.0...1.0.1
 [1.0.2]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.1...1.0.2
+[1.0.3]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.2...1.0.3
