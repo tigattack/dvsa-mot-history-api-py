@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2024-09-17
+### :memo: Documentation Changes
+- [`bc05328`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/bc053283b5c195771014f4589b6567e03f306a28) - update CHANGELOG.md for 1.0.3 *(commit by [@tigattack](https://github.com/tigattack))*
+
+### :wrench: Chores
+- [`46fd0a1`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/46fd0a19e7b6c39bfff204b587371161b6ec2e86) - **deps**: downgrade yarl, idna, multidict, *(commit by [@tigattack](https://github.com/tigattack))*
+- [`f3dee9a`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/f3dee9ae690018b978d0cd61308da8d887761655) - bump version to 1.0.4 *(commit by [@tigattack](https://github.com/tigattack))*
+
+
 ## [1.0.3] - 2024-09-17
 ### :memo: Documentation Changes
 - [`35b4c04`](https://github.com/tigattack/dvsa-mot-history-api-py/commit/35b4c04b2fc8359b6d58e2c494640cc74c18a8c2) - **changelog**: add changes *(commit by [@tigattack](https://github.com/tigattack))*
@@ -86,3 +95,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.1]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.0...1.0.1
 [1.0.2]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.1...1.0.2
 [1.0.3]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.2...1.0.3
+[1.0.4]: https://github.com/tigattack/dvsa-mot-history-api-py/compare/1.0.3...1.0.4
