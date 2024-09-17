@@ -3,7 +3,7 @@ requires-python = ">=3.9"
 
 [tool.poetry]
 name = "dvsa_mot_history"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python SDK for DVSA MOT History API"
 authors = ["tigattack <10629864+tigattack@users.noreply.github.com>"]
 readme = "README.md"
