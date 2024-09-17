@@ -19,7 +19,7 @@ Issues = "https://github.com/tigattack/dvsa-mot-history-api-py/issues"
 [tool.poetry.dependencies]
 python = "^3.9"
 msal = "^1.30.0"
-aiohttp = "^3.9.5"
+aiohttp = "3.9.5"
 pydantic = "^2.8.2"
 
 
