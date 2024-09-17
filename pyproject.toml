@@ -15,6 +15,7 @@ packages = [
 [tool.poetry.urls]
 Repository = "https://github.com/tigattack/dvsa-mot-history-api-py"
 Issues = "https://github.com/tigattack/dvsa-mot-history-api-py/issues"
+Changelog = "https://github.com/tigattack/dvsa-mot-history-api-py/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
