@@ -10,6 +10,10 @@
       matchDepTypes: "dev",
       matchUpdateTypes: ["minor", "patch"],
       automerge: true
+    },
+    {
+      matchPackageNames: ["aiohttp"],
+      allowedVersions: "<3.10" // Match https://github.com/Cog-Creators/Red-DiscordBot/blob/V3/develop/requirements/base.in
     }
   ]
 }
